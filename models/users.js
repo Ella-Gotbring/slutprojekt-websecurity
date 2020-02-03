@@ -2,7 +2,7 @@ const dataStore = require('nedb-promise')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
-const userdb = new dataStore({ filename: './Database/Userlist.db', autoload: true })
+const userdb = new dataStore({ filename: './Database/userlist.db', autoload: true })
 
 module.exports = {
     async create(body) {
@@ -30,20 +30,18 @@ module.exports = {
         }
     },
     async authorize(body) {
-        const user = await userdb.findOne({ email: body.email })
-        if (!user) {
+        const email = body.email;
+        const password = body.password;
+        const user = await userdb.findOne({ email });
+        if (email !== user.email) {
             return false
         } else {
-            const passwordMatching = awaitbcrypt.compare(body.password, user.password)
+            const passwordMatching = await bcrypt.compare(password, user.password)
             if (passwordMatching) {
-                const payload = {
-                    email: user.email,
-                    password=user.password
-                }
-                const token = jwt.sign(payload, process.env.secret)
+                const secret = process.env.secret;
 
                 const userAuth = {
-                    token: token,
+                    confirm: "confirm",
                     user: {
                         email: user.email,
                         name: user.name,
@@ -55,7 +53,8 @@ module.exports = {
                         }
                     }
                 }
-                return userAuth
+                return jwt.sign(field, secret);
+
             } else {
                 return false
             }
