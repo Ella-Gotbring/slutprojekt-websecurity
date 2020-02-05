@@ -1,7 +1,6 @@
 const Datastore = require('nedb-promise'),
     products = new Datastore({ filename: './Database/productlist.db', autoload: true })
 
-
 module.exports = {
     async insert(body) {
         const productInsert = {
