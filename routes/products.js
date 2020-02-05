@@ -32,7 +32,7 @@ router.get('/api/products/:id', async (req, res) => {
 });
 
 //update product, only admin
-router.patch('/api/products/:productId', async (req, res) => {
+router.patch('/api/products/:id', async (req, res) => {
     let update = await productModel.update(req.params.id, req.body);
     if (!update) {
         res.json({ message: 'please try again' });
