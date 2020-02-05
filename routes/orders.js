@@ -1,26 +1,21 @@
 const express = require('express')
 const router = express.Router()
 
-const Product = require('../models/users')
+const orderModel = require('../models/orders')
 
-router.get('/', async (req, res) => {
-    res.send('Order list')
+router.get('/api/orders', async (req, res) => {
+    const OrderJSON = await orderModel.getOrder();
+    res.json(OrderJSON)
 })
 
-router.post('/', async (req, res) => {
-    res.send('Created new order')
-})
+router.post('/api/orders', async (req, res) => {
+    const OrderJSON = await orderModel.create(req.body)
+    if (!orderModel) {
+        res.json({ message: 'Could not find your order' })
+    } else {
+        res.json({ message: 'Created order' })
+    }
 
-router.get('/:productId', async (req, res) => {
-    res.send('Information about order')
-})
+});
 
-router.patch('/:productId', async (req, res) => {
-    res.send('Order list')
-})
-
-router.delete('/:productId', async (req, res) => {
-    res.send('Order is deleted')
-})
-
-module.exports = router
+module.exports = router;

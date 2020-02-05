@@ -1,17 +1,18 @@
-const dataStore = require('nedb-promise')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
-const userdb = new dataStore({ filename: './Database/userlist.db', autoload: true })
+const Datastore = require('nedb-promise'),
+    users = new Datastore({ filename: './Database/userlist.db', autoload: true });
 
 module.exports = {
-    async create(body) {
+    async register(body) {
         if (body.password == body.repeatpassword) {
-            const user = await userdb.findOne({ email: body.email })
-            if (user) {
+            const userN = await users.findOne({ email: body.email });
+            //true=return false
+            if (userN) {
                 return false
             } else {
-                const passwordHash = await bcrypt.hash(body.password, 10)
+                const passwordHash = await bcrypt.hash(body.password, 10);
                 const newUser = {
                     email: body.email,
                     password: passwordHash,
@@ -20,28 +21,24 @@ module.exports = {
                     adress: {
                         street: body.adress.street,
                         city: body.adress.city,
-                        zip: body.adress.city
+                        zip: body.adress.zip
                     }
                 }
-                return await userdb.insert(newUser)
+                return await users.insert(newUser)
             }
         } else {
             return false
         }
     },
-    async authorize(body) {
-        const email = body.email;
-        const password = body.password;
-        const user = await userdb.findOne({ email });
-        if (email !== user.email) {
+    async login(body) {
+        const userN = await users.findOne({ email: body.email })
+        if (!userN) {
             return false
         } else {
-            const passwordMatching = await bcrypt.compare(password, user.password)
+            const passwordMatching = await bcrypt.compare(body.password, userN.password)
             if (passwordMatching) {
-                const secret = process.env.secret;
-
-                const userAuth = {
-                    confirm: "confirm",
+                const payment = {
+                    token: 'JWT_TOKEN',
                     user: {
                         email: user.email,
                         name: user.name,
@@ -53,10 +50,10 @@ module.exports = {
                         }
                     }
                 }
-                return jwt.sign(field, secret);
-
+                const token = jwt.sign(payload, process.env.SECRET, { expiresIn: '2hrs' });
+                return token;
             } else {
-                return false
+                return false;
             }
         }
     }

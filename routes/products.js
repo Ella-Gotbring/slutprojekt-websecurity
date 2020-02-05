@@ -1,44 +1,54 @@
 const express = require('express')
 const router = express.Router()
 
-const Product = require('../models/products')
+const productModel = require('../models/products')
 
-router.get('/', async (req, res) => {
-    const products = await Product.all()
-    res.json(products)
+
+//get all products
+router.get('/api/products', async (req, res) => {
+    const allProducts = await productModel.all();
+    res.json(allProducts);
 })
 
-router.post('/', async (req, res) => {
-    const product = await Product.create(req.body)
-    if (product) {
-        res.status(201).json(product)
-        console.log(product)
+//new product is created, only admin
+
+router.post('/api/products', async (req, res) => {
+    const create = await productModel.create(req.body);
+    if (!create) {
+        res.json({ message: 'please try again' });
     } else {
-        res.status(404).json({ message: "product does not exist" })
+        res.json(create);
     }
-})
+});
 
-router.get('/:productId', async (req, res) => {
-    const product = await Product.get(req.params.productId)
-    if (product) {
-        res.json(product)
+//get one product 
+router.get('/api/products/:id', async (req, res) => {
+    const create = await productModel.create(req.params.id);
+    if (create) {
+        res.json(create);
     } else {
-        res.status(404).json({ message: "Could not find product" })
+        res.json({ message: 'product not available' })
     }
+});
 
-})
-
-router.patch('/:productId', async (req, res) => {
-    res.send('The product is now changed')
-})
-
-router.delete('/productId', async (req, res) => {
-    const product = await Product.remove(req.params.productId)
-    if (product) {
-        res.status(200).json({ message: 'Product is now deleted' })
+//update product, only admin
+router.patch('/api/products/:productId', async (req, res) => {
+    let update = await productModel.update(req.params.id, req.body);
+    if (!update) {
+        res.json({ message: 'please try again' });
     } else {
-        res.status(404).json({ message: 'Product with the given id does not exist' })
+        res.json(update);
+    }
+});
+
+//delete product with id, only admin
+router.delete('/api/products/:id', async (req, res) => {
+    const remove = await productModel.remove(req.params.id);
+    if (!remove) {
+        res.json({ message: 'removed' })
+    } else {
+        res.json(remove);
     }
 
 })
-module.exports = router
+module.exports = router;

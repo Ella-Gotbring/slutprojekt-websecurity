@@ -1,15 +1,26 @@
-const dataStore = require('nedb-promise')
-const ordersdb = new dataStore({ filename: './Database/Orderlist.db', autoload: true })
+const Datastore = require('nedb-promise'),
+    orders = new Datastore({ filename: './Database/orderlist.db', autoload: true })
 
 module.exports = {
-    async create() {
-        return await ordersdb.insert({
-            title: require.params.title,
-            imgFile: require.filename,
-            price: req.params.price,
-            shortDesc: req - params.shortDesc,
-            longDesc: req.params.longDesc
-        })
-    }
 
+    //new order
+    async insert(body) {
+        const orderInsert = {
+            _id: body.id,
+            timeStamp: Date.now(),
+            status: 'inProcess',
+            items: body.items,
+            oderValue: body.orderValue,
+
+        };
+        return await orders.insert(orderInsert);
+    },
+    //get all orders
+    async all() {
+        return await orders.find({})
+    },
+    //get one order
+    async getorderid(orderId) {
+        return await orders.findOne({ _id: orderId })
+    }
 }

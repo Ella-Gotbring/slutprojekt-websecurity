@@ -1,28 +1,32 @@
 const express = require('express')
 const router = express.Router()
 const jwt = require('jsonwebtoken')
+const userModel = require('../models/users')
+require('dotenv').config()
+const secret = process.env.SECRET;
 
-const User = require('../models/users')
 
-router.post('/auth', async (req, res) => {
-    const users = await Users.authorize(req.body)
-    if (user) {
-        res.status(200).json(user)
-        console.log(user)
+//create the user
+router.post('/api/register', async (req, res) => {
+    const userRegister = await userModel.register(req.body);
+    if (userRegister) {
+        res.json(userRegister);
     } else {
-        res.status(400).json({ message: "Password or email did not match" })
+        res.send('error...');
     }
-})
+});
 
-router.post('/register'), async (req, res) => {
-    const users = await Users.create(req.body);
-    console.log(users)
-    if (users) {
-        res.status(200).json({ message: "user is now registered" })
+//auth a user
+router.post('/api/auth'), async (req, res) => {
+    const token = await userModel.userLogin(req.body);
+    const confirm = jwt.verify(token, secret);
+    if (confirmed) {
+        res.json(confirmed);
     } else {
-        res.status(400).json({ message: "user exists already" })
+        res.send('Did not work');
     }
+
 
 }
-module.exports = router
+module.exports = router;
 
