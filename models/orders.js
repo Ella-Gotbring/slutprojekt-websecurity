@@ -1,10 +1,10 @@
-const Datastore = require('nedb-promise'),
-    orders = new Datastore({ filename: './Database/orderlist.db', autoload: true })
+const Datastore = require('nedb-promise')
+const orders = new Datastore({ filename: './db/orderlist.db', autoload: true })
 
 module.exports = {
 
     //new order
-    async insert(body) {
+    async create(body) {
         const orderInsert = {
             _id: body.id,
             timeStamp: Date.now(),

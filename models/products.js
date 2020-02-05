@@ -1,5 +1,5 @@
-const Datastore = require('nedb-promise'),
-    products = new Datastore({ filename: './Database/productlist.db', autoload: true })
+const Datastore = require('nedb-promise')
+const products = new Datastore({ filename: './db/productlist.db', autoload: true })
 
 module.exports = {
     async insert(body) {
@@ -24,13 +24,13 @@ module.exports = {
     },
     //delete product with ID
     async remove(id) {
-        return await products.remove({ _id: 'id' });
+        return await products.remove({ _id: id });
     },
     //update+return document with ID if updated 
     async update(id, body) {
-        let productUpdated = await products.findOne({ _id: id }, { $set: body });
-        productUpdated = await products.update(product, { $set: body });
-        return productUpdated;
+        let product = await products.findOne({ _id: id }, { $set: body });
+        product = await products.update(product, { $set: body });
+        return product;
 
     }
 }
