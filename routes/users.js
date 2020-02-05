@@ -1,10 +1,7 @@
-const express = require('express')
-const router = express.Router()
-const jwt = require('jsonwebtoken')
+const express = require("express");
+const router = new Router();
 const userModel = require('../models/users')
 require('dotenv').config()
-const secret = process.env.SECRET;
-
 
 //create the user
 router.post('/api/register', async (req, res) => {
@@ -18,12 +15,13 @@ router.post('/api/register', async (req, res) => {
 
 //auth a user
 router.post('/api/auth'), async (req, res) => {
-    const token = await userModel.userLogin(req.body);
-    const confirm = jwt.verify(token, secret);
-    if (confirmed) {
-        res.json(confirmed);
+    const token = await userModel.login(req.body);
+    // const confirm = jwt.verify(token, secret);  not needed here
+    if (token) {
+        res.json(token);
+        console.log(token);
     } else {
-        res.send('Did not work');
+        res.json({ error: "Did not work lmao get rekt" });
     }
 
 

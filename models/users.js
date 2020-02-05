@@ -31,7 +31,7 @@ module.exports = {
             return false
         }
     },//verify user when logging in
-    async auth(body) {
+    async login(body) {
         const userN = await users.findOne({ email: body.email })
         if (!userN) { //return false if email isn't in the database
             return false
@@ -44,8 +44,7 @@ module.exports = {
                 }
                 //create token
                 const token = jwt.sign(payload, process.env.SECRET);
-                return token;
-            } else {
+
                 return {
                     token: token,
                     user: {
@@ -59,9 +58,10 @@ module.exports = {
                         },
                         orderHistory: user.orderHistory
                     }
-                }
+                };
+            } else {
+                return false;
             }
         }
     }
 }
-

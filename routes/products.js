@@ -1,5 +1,6 @@
-const express = require('express')
-const router = express.Router()
+const express = require("express");
+const router = express.Router();
+
 
 const productModel = require('../models/products')
 
@@ -14,10 +15,10 @@ router.get('/api/products', async (req, res) => {
 
 router.post('/api/products', async (req, res) => {
     const create = await productModel.create(req.body);
-    if (!create) {
-        res.json({ message: 'please try again' });
-    } else {
+    if (create) {
         res.json(create);
+    } else {
+        res.json({ message: 'please try again' });
     }
 });
 
