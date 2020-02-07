@@ -6,7 +6,7 @@ const users = new Datastore({ filename: './db/userlist.db', autoload: true });
 
 module.exports = {
     async register(body) {
-        if (body.password == body.repeatpassword) {
+        if (body.password == body.repeatPassword) {
             const userN = await users.findOne({ email: body.email });
             //true=return false
             if (userN) {

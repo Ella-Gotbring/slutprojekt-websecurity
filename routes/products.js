@@ -1,6 +1,5 @@
-const express = require("express");
+const express  = require("express");
 const router = express.Router();
-
 
 const productModel = require('../models/products')
 
@@ -14,19 +13,19 @@ router.get('/api/products', async (req, res) => {
 //new product is created, only admin
 
 router.post('/api/products', async (req, res) => {
-    const create = await productModel.create(req.body);
-    if (create) {
-        res.json(create);
+    const allProducts = await productModel.create(req.body);
+    if (!allProducts) {
+        res.json({ message: 'please try again' })
     } else {
-        res.json({ message: 'please try again' });
+        res.json(allProducts);
     }
 });
 
 //get one product 
 router.get('/api/products/:id', async (req, res) => {
-    const create = await productModel.create(req.params.id);
-    if (create) {
-        res.json(create);
+    const allProducts = await productModel.create(req.params.id);
+    if (allProducts) {
+        res.json(allProducts);
     } else {
         res.json({ message: 'product not available' })
     }
@@ -34,21 +33,21 @@ router.get('/api/products/:id', async (req, res) => {
 
 //update product, only admin
 router.patch('/api/products/:id', async (req, res) => {
-    let update = await productModel.update(req.params.id, req.body);
-    if (!update) {
+    let allProducts = await productModel.update(req.params.id, req.body);
+    if (!allProducts) {
         res.json({ message: 'please try again' });
     } else {
-        res.json(update);
+        res.json(allProducts);
     }
 });
 
 //delete product with id, only admin
 router.delete('/api/products/:id', async (req, res) => {
-    const remove = await productModel.remove(req.params.id);
-    if (!remove) {
+    const allProducts = await productModel.remove(req.params.id);
+    if (!allProducts) {
         res.json({ message: 'removed' })
     } else {
-        res.json(remove);
+        res.json(allProducts);
     }
 
 })

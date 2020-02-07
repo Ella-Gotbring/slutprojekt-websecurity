@@ -1,8 +1,8 @@
 const express = require("express");
-const router = new Router();
-
+const router = express.Router();
 
 const orderModel = require('../models/orders')
+
 
 router.get('/api/orders', async (req, res) => {
     const OrderJSON = await orderModel.getOrder();
